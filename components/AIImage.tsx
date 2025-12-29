@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { getAsset } from '../utils/db';
+import { getAsset } from '../utils/db.ts';
 
 interface AIImageProps {
   id: number;

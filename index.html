@@ -15,33 +15,35 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
-    <script>
-      // CRITICAL: Shim process.env for browser environments
-      // This prevents the app from crashing on boot when checking for the API Key
+    <script type="text/javascript">
+      // SPA Redirect Recovery Logic
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).filter(function(v) {
+            return v.indexOf('p=/') === 0;
+          })[0];
+          if (decoded !== undefined) {
+            window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded.slice(3) + l.hash
+            );
+          }
+        }
+      }(window.location));
+
+      // Shim process.env for browser environments
       window.process = { env: { API_KEY: "" } };
     </script>
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Dark base for loading */
+            background-color: #0f172a;
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
         }
-        .font-medical {
-            font-family: 'IBM Plex Sans', sans-serif;
-        }
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        
-        @keyframes pulse-soft {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.98); }
-        }
-
-        /* Show a message if React fails to mount or is taking time */
         #root:empty::before {
             content: "Initializing PhenoGen AI...";
             position: absolute;
@@ -55,6 +57,10 @@
             letter-spacing: 0.3em;
             text-transform: uppercase;
             animation: pulse-soft 2s infinite ease-in-out;
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
     </style>
     <script type="importmap">
@@ -72,7 +78,6 @@
 </head>
 <body class="bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
     <div id="root"></div>
-    <!-- Load the entry point as a module -->
     <script type="module" src="./index.tsx"></script>
 </body>
 </html>

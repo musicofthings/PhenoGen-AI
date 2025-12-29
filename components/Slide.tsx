@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { SlideContent } from '../types';
-import { AIImage } from './AIImage';
+import { SlideContent } from '../types.ts';
+import { AIImage } from './AIImage.tsx';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface SlideProps {
@@ -26,7 +26,6 @@ export const Slide: React.FC<SlideProps> = ({ slide }) => {
   const renderVisual = () => {
     if (slide.visualType === 'form') return null;
     
-    // Slide 2: Clear, high-impact clinical photography, no graph
     if (slide.id === 2) {
        return (
         <div className="h-full w-full">

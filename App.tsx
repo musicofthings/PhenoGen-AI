@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { SLIDES } from './constants';
-import { Slide } from './components/Slide';
-import { ChevronLeft, ChevronRight, LayoutGrid, Monitor } from './components/Icon';
-import { AIImage } from './components/AIImage';
-import { ViewMode } from './types';
+import { SLIDES } from './constants.ts';
+import { Slide } from './components/Slide.tsx';
+import { ChevronLeft, ChevronRight, LayoutGrid, Monitor } from './components/Icon.tsx';
+import { AIImage } from './components/AIImage.tsx';
+import { ViewMode } from './types.ts';
 import { GoogleGenAI } from "@google/genai";
-import { getAsset, saveAsset, getBakedCount, initDB, clearAllAssets } from './utils/db';
+import { getAsset, saveAsset, getBakedCount, initDB, clearAllAssets } from './utils/db.ts';
 
 function App() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);

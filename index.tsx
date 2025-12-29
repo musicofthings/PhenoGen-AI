@@ -45,15 +45,16 @@ function App() {
   };
 
   const bakeStaticAssets = async () => {
-    // 1. Check for API Key selection (Mandatory for high-fidelity models)
-    const hasKey = await (window as any).aistudio?.hasSelectedApiKey();
-    if (!hasKey) {
+    const hasKey = await (window as any).aistudio?.hasSelectedApiKey?.();
+    if (!hasKey && (window as any).aistudio?.openSelectKey) {
       addLog("ACTION REQUIRED: Please select an API Key from a paid GCP project.");
-      await (window as any).aistudio?.openSelectKey();
+      await (window as any).aistudio.openSelectKey();
+    } else if (!hasKey) {
+      addLog("WARNING: AI Studio integration not detected. Ensure process.env.API_KEY is available.");
     }
 
     setIsProvisioning(true);
-    addLog("Connecting to PhenoGen Engine (Gemini 3 Pro Image)...");
+    addLog("Connecting to Nano Banana Pro Engine (Gemini 3 Pro Image)...");
     
     for (let i = 0; i < SLIDES.length; i++) {
       const slide = SLIDES[i];
@@ -69,25 +70,36 @@ function App() {
       try {
         addLog(`Synthesizing visual for Slide #${slide.id}...`);
         
-        // Re-instantiate to ensure we pick up the latest API Key from the selection dialog
+        // Use mandatory named parameter for apiKey
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
         
         const response = await ai.models.generateContent({
           model: 'gemini-3-pro-image-preview',
-          contents: {
-            parts: [{ text: slide.imagePrompt }],
+          contents: { 
+            parts: [{ text: slide.imagePrompt }] 
           },
           config: {
-            imageConfig: { aspectRatio: "16:9", imageSize: "1K" }
-          },
+            imageConfig: { 
+              aspectRatio: "16:9", 
+              imageSize: "1K"
+            }
+          }
         });
 
-        const parts = response.candidates?.[0]?.content?.parts;
-        const part = parts?.find(p => p.inlineData);
-        if (part?.inlineData) {
-          await saveAsset(slide.id, `data:image/png;base64,${part.inlineData.data}`);
-          addLog(`Success: Artifact #${slide.id} stored securely.`);
-        } else {
+        let imageFound = false;
+        if (response.candidates && response.candidates[0]?.content?.parts) {
+          for (const part of response.candidates[0].content.parts) {
+            if (part.inlineData && part.inlineData.data) {
+              const mimeType = part.inlineData.mimeType || 'image/png';
+              await saveAsset(slide.id, `data:${mimeType};base64,${part.inlineData.data}`);
+              addLog(`Success: Artifact #${slide.id} stored in IndexedDB.`);
+              imageFound = true;
+              break;
+            }
+          }
+        }
+
+        if (!imageFound) {
           addLog(`Warning: No image data in response for #${slide.id}. Retrying...`);
           i--;
           continue;
@@ -99,15 +111,27 @@ function App() {
         if (errorMsg.includes("403") || errorMsg.includes("Permission") || errorMsg.includes("caller does not have permission")) {
           addLog("CRITICAL: Permission Denied (403). Ensure you selected a key from a PAID GCP project.");
           addLog("Triggering re-selection dialog...");
-          await (window as any).aistudio?.openSelectKey();
+          if ((window as any).aistudio?.openSelectKey) {
+            await (window as any).aistudio.openSelectKey();
+          }
           setIsProvisioning(false);
           return;
         }
         
-        if (errorMsg.includes("Requested entity was not found")) {
-          addLog("CRITICAL: Resource not found. Resetting API key context...");
-          await (window as any).aistudio?.openSelectKey();
+        if (errorMsg.includes("Requested entity was not found") || errorMsg.includes("Model not found")) {
+          addLog("CRITICAL: Model not found. Ensure billing is enabled and model access is granted.");
+          if ((window as any).aistudio?.openSelectKey) {
+            addLog("Triggering re-selection dialog...");
+            await (window as any).aistudio.openSelectKey();
+          }
           i--; 
+          continue;
+        }
+
+        if (errorMsg.includes("quota") || errorMsg.includes("rate limit")) {
+          addLog(`RATE LIMIT: Cooling down for 5 seconds...`);
+          await new Promise(r => setTimeout(r, 5000));
+          i--;
           continue;
         }
 
@@ -116,7 +140,13 @@ function App() {
         i--;
         continue;
       }
+      
       setProvisionProgress(i + 1);
+      
+      // Throttle requests to avoid rate limiting
+      if (i < SLIDES.length - 1) {
+        await new Promise(r => setTimeout(r, 1000));
+      }
     }
     
     addLog("Deployment Build Complete. Unlocking Deck UI.");
@@ -183,9 +213,9 @@ function App() {
             
             {!isProvisioning ? (
               <div className="py-8 space-y-8">
-                <div className="space-y-3">
+                <div className="space-y-3 text-left">
                    <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
-                    To ensure zero-latency clinical visuals during the presentation, we must pre-render the 20 slide assets using Gemini 3 Pro.
+                    To ensure zero-latency clinical visuals during the presentation, we must pre-render the 20 slide assets using Gemini 3 Pro Image.
                   </p>
                   <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold border border-slate-700/50 rounded-lg px-3 py-1 inline-block">Requires Paid API Access</p>
                 </div>
@@ -195,13 +225,13 @@ function App() {
                 >
                   START PROVISIONING SEQUENCE
                 </button>
-                <div className="mt-4 pt-4 border-t border-slate-800">
-                  <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" className="text-xs text-blue-500 hover:text-blue-400 underline transition-colors">Setup Billing Information</a>
+                <div className="mt-4 pt-4 border-t border-slate-800 text-left">
+                  <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:text-blue-400 underline transition-colors">Setup Billing Information</a>
                 </div>
               </div>
             ) : (
               <div className="space-y-6">
-                 <div className="h-64 overflow-y-auto pr-4 space-y-2 text-[10px] custom-scrollbar bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+                 <div className="h-64 overflow-y-auto pr-4 space-y-2 text-[10px] custom-scrollbar bg-slate-900/50 p-4 rounded-2xl border border-slate-800 text-left">
                     {buildLogs.map((log, i) => (
                       <div key={i} className={`${i === buildLogs.length - 1 ? 'text-blue-200' : 'text-slate-500'} border-l border-slate-700 pl-3 py-0.5`}>
                         {log}
@@ -229,7 +259,7 @@ function App() {
           <div className="flex justify-between items-center text-[10px] text-slate-500 font-bold uppercase tracking-widest px-4">
             <span className="flex items-center space-x-2">
               <span className="w-1 h-1 rounded-full bg-slate-500"></span>
-              <span>Encrypted Store</span>
+              <span>IndexedDB Store</span>
             </span>
             <span className="flex items-center space-x-2">
               <span className="w-1 h-1 rounded-full bg-blue-500 animate-pulse"></span>
@@ -246,7 +276,7 @@ function App() {
       <header className="px-8 py-6 border-b border-slate-100 flex justify-between items-center sticky top-0 z-[100] bg-white/80 backdrop-blur-xl">
         <div className="flex items-center space-x-5">
           <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg">Φ</div>
-          <div>
+          <div className="text-left">
             <h1 className="text-2xl font-black text-slate-900 tracking-tighter leading-none">PhenoGen</h1>
             <div className="flex items-center space-x-2 mt-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -334,7 +364,6 @@ function App() {
           style={{ width: `${((currentSlideIndex + 1) / SLIDES.length) * 100}%` }} 
         />
       </footer>
-      <style>{`.no-scrollbar::-webkit-scrollbar { display: none; }`}</style>
     </div>
   );
 }

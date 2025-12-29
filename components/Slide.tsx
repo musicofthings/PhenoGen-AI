@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { SlideContent } from '../types.ts';
 import { AIImage } from './AIImage.tsx';
@@ -71,8 +70,8 @@ export const Slide: React.FC<SlideProps> = ({ slide }) => {
   if (slide.visualType === 'form') {
     return (
       <div className="w-full flex flex-col lg:flex-row gap-12 items-start py-8">
-        <div className="flex-1 space-y-6">
-          <h1 className="text-5xl font-black text-slate-900 font-medical tracking-tight leading-tight">{slide.title}</h1>
+        <div className="flex-1 space-y-6 text-left">
+          <h1 className="text-5xl font-black text-slate-900 tracking-tight leading-tight">{slide.title}</h1>
           <p className="text-xl text-slate-500 font-light max-w-md leading-relaxed">Join our mission to eliminate the diagnostic odyssey for the next generation of children.</p>
           <div className="pt-8 space-y-5">
              <div className="flex items-center space-x-4">
@@ -100,7 +99,7 @@ export const Slide: React.FC<SlideProps> = ({ slide }) => {
                <button onClick={() => setSubmitted(false)} className="px-6 py-2 bg-slate-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-all">Send New Entry</button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white border border-slate-100 p-8 md:p-10 rounded-[2.5rem] shadow-2xl space-y-6">
+            <form onSubmit={handleSubmit} className="bg-white border border-slate-100 p-8 md:p-10 rounded-[2.5rem] shadow-2xl space-y-6 text-left">
                <div className="space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
@@ -131,8 +130,8 @@ export const Slide: React.FC<SlideProps> = ({ slide }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="mb-8 flex-shrink-0">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight font-medical leading-[1.15]">
+      <div className="mb-8 flex-shrink-0 text-left">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
           {slide.title}
         </h1>
         <div className="flex items-center space-x-3 mt-4">
@@ -142,7 +141,7 @@ export const Slide: React.FC<SlideProps> = ({ slide }) => {
       </div>
 
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 min-h-0">
-        <div className="flex flex-col space-y-8 overflow-y-auto pr-6 custom-scrollbar pb-12">
+        <div className="flex flex-col space-y-8 overflow-y-auto pr-6 custom-scrollbar pb-12 text-left">
           <ul className="space-y-8">
             {slide.content.map((point, index) => (
               <li key={index} className="flex space-x-5 group items-start">
@@ -160,7 +159,7 @@ export const Slide: React.FC<SlideProps> = ({ slide }) => {
             <div className="grid grid-cols-2 gap-4 pt-6">
               {slide.stats.map((stat, i) => (
                 <div key={i} className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center justify-center hover:shadow-md transition-shadow">
-                  <span className={`text-3xl font-black ${stat.color?.includes('red') ? 'text-rose-500' : 'text-slate-900'}`}>{stat.value}</span>
+                  <span className={`text-3xl font-black ${stat.color?.includes('orange') || stat.color?.includes('red') ? 'text-rose-500' : 'text-slate-900'}`}>{stat.value}</span>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{stat.label}</span>
                 </div>
               ))}

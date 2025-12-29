@@ -1,4 +1,3 @@
-
 import { SlideContent } from './types';
 
 export const SLIDES: SlideContent[] = [
@@ -49,7 +48,7 @@ export const SLIDES: SlideContent[] = [
     title: "Why This Gap Is Clinically Dangerous",
     subtitle: "The Diagnostic Odyssey",
     content: [
-      "Average diagnostic delay: 5–7 years for rare diseases.",
+      "Average diagnostic delay: 5-7 years for rare diseases.",
       "Repeated non-targeted investigations and missed intervention.",
       "Increased healthcare costs and psychosocial burden.",
       "Subtle or evolving phenotypes often go unrecognized."
@@ -133,7 +132,7 @@ export const SLIDES: SlideContent[] = [
       "Workforce cannot scale proportionally through training.",
       "Embedding specialist reasoning into scalable software.",
       "Amplifies 200 specialists to support 47,000 pediatricians.",
-      "Represents a >200× leverage of clinical knowledge."
+      "Represents a >200x leverage of clinical knowledge."
     ],
     stats: [
       { label: "Knowledge Leverage", value: "235x", color: "bg-emerald-600" }

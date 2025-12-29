@@ -33,7 +33,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
         #root:empty::before {
-            content: "PHG_SYSTEM: INITIALIZING...";
+            content: "PHG_SYSTEM: INITIALIZING_VIRTUAL_DECK...";
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #3b82f6; font-family: 'JetBrains Mono', monospace; font-size: 10px;
             letter-spacing: 0.4em; animation: pulse-soft 2s infinite ease-in-out;
@@ -44,6 +44,8 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 
     <script type="importmap">
@@ -62,11 +64,9 @@
 </head>
 <body class="bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
     <div id="root"></div>
-    
-    <!-- Use esm.sh/run to transpile TSX in the browser -->
+    <!-- Transpiler for TSX -->
     <script type="module" src="https://esm.sh/run"></script>
-    
-    <!-- Main Entry Point -->
+    <!-- Entry Point -->
     <script type="text/tsx" src="index.tsx"></script>
 </body>
 </html>

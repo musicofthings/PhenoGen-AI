@@ -339,7 +339,6 @@ function App() {
   );
 }
 
-// Ensure the root container exists before rendering
 const rootContainer = document.getElementById('root');
 if (rootContainer) {
   const root = createRoot(rootContainer);

@@ -4,18 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhenoGen AI | Clinician Presentation Deck</title>
+    
+    <!-- Tailwind and Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <script type="text/javascript">
-      // Global process shim for environment compatibility
+      // Global process shim
       window.process = { env: { API_KEY: "" } };
+
+      // SPA Redirect Recovery Logic for GitHub Pages
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).filter(function(v) {
+            return v.indexOf('p=/') === 0;
+          })[0];
+          if (decoded !== undefined) {
+            window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded.slice(3) + l.hash
+            );
+          }
+        }
+      }(window.location));
     </script>
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
         #root:empty::before {
-            content: "PHG_SYSTEM: INITIALIZING_VIRTUAL_DECK...";
+            content: "PHG_SYSTEM: INITIALIZING...";
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #3b82f6; font-family: 'JetBrains Mono', monospace; font-size: 10px;
             letter-spacing: 0.4em; animation: pulse-soft 2s infinite ease-in-out;
@@ -23,7 +41,6 @@
         }
         @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         
-        /* Smooth scrolling for presentations */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
@@ -45,8 +62,11 @@
 </head>
 <body class="bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
     <div id="root"></div>
-    <!-- esm.sh/run is used as the transpiler for .tsx files in the browser -->
+    
+    <!-- Use esm.sh/run to transpile TSX in the browser -->
     <script type="module" src="https://esm.sh/run"></script>
+    
+    <!-- Main Entry Point -->
     <script type="text/tsx" src="index.tsx"></script>
 </body>
 </html>

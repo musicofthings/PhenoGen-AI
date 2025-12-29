@@ -83,14 +83,15 @@
 </head>
 <body class="bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
     <div id="root"></div>
+    
     <!-- 
-      esm.sh/run fetches the entry point and its dependencies as text/source,
-      then transpiles TSX on-the-fly. This circumvents the MIME-type 
-      checks that cause failures on GitHub Pages for .tsx files.
+      Bootstrapping the app via esm.sh/run. 
+      This script detects text/tsx blocks, transpiles them, 
+      and executes them as ES modules.
     -->
-    <script type="module">
-      import { run } from 'https://esm.sh/run';
-      run('./index.tsx');
+    <script type="text/tsx">
+      import './index.tsx';
     </script>
+    <script type="module" src="https://esm.sh/run"></script>
 </body>
 </html>

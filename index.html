@@ -1,109 +1,52 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhenoGen AI | Clinician Presentation Deck</title>
-    
-    <!-- SEO & Social Metadata -->
-    <meta name="description" content="A high-fidelity interactive deck for PhenoGen AI, scaling pediatric genetics expertise through computational dysmorphology.">
-    <meta property="og:title" content="PhenoGen AI Clinician Deck">
-    <meta property="og:description" content="Scaling expert-level genetics through AI.">
-    <meta property="og:type" content="website">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <script type="text/javascript">
-      // SPA Redirect Recovery Logic for GitHub Pages
-      (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).filter(function(v) {
-            return v.indexOf('p=/') === 0;
-          })[0];
-          if (decoded !== undefined) {
-            window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded.slice(3) + l.hash
-            );
-          }
-        }
-      }(window.location));
-
-      // Global process shim for browser-side SDK compatibility
+      // Global process shim for environment compatibility
       window.process = { env: { API_KEY: "" } };
     </script>
 
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
         #root:empty::before {
             content: "PHG_SYSTEM: INITIALIZING_VIRTUAL_DECK...";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #3b82f6;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.4em;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #3b82f6; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            letter-spacing: 0.4em; animation: pulse-soft 2s infinite ease-in-out;
             text-transform: uppercase;
-            animation: pulse-soft 2s infinite ease-in-out;
         }
-        @keyframes pulse-soft {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        /* Global Clinical UI Overrides */
+        @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        
+        /* Smooth scrolling for presentations */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
+
     <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@19.0.0",
     "react-dom": "https://esm.sh/react-dom@19.0.0",
     "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "recharts": "https://esm.sh/recharts@3.6.0",
-    "@google/genai": "https://esm.sh/@google/genai@1.34.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+    "recharts": "https://esm.sh/recharts@2.15.0?deps=react@19.0.0,react-dom@19.0.0",
+    "@google/genai": "https://esm.sh/@google/genai",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
   }
 }
 </script>
 </head>
 <body class="bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
     <div id="root"></div>
-    
-    <!-- 
-      This text/tsx block acts as the new entry point.
-      esm.sh/run will fetch its dependencies (like App.tsx) using fetch(),
-      ignoring the server's incorrect MIME types, and then transpiling them.
-    -->
-    <script type="text/tsx">
-      import React from 'react';
-      import { createRoot } from 'react-dom/client';
-      import App from './App.tsx';
-
-      const rootElement = document.getElementById('root');
-      if (rootElement) {
-        const root = createRoot(rootElement);
-        root.render(
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
-        );
-      }
-    </script>
+    <!-- esm.sh/run is used as the transpiler for .tsx files in the browser -->
     <script type="module" src="https://esm.sh/run"></script>
+    <script type="text/tsx" src="index.tsx"></script>
 </body>
 </html>

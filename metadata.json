@@ -1,0 +1,7 @@
+{
+  "name": "PhenoGen AI - Clinician Deck",
+  "description": "High-fidelity, AI-powered interactive presentation for the democratization of clinical genetics.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

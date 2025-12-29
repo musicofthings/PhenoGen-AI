@@ -5,7 +5,7 @@ import App from './App.tsx';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
-  console.error("Critical: Could not find root element '#root'.");
+  console.error("PHG_CRITICAL: Root mount point not found.");
 } else {
   const root = createRoot(rootElement);
   root.render(
